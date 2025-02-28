@@ -9,9 +9,16 @@ import (
 )
 
 type Score struct {
-	best    int64
-	current int64
-	font    *text.GoTextFace
+	best      int64
+	current   int64
+	font      *text.GoTextFace
+	fontBytes []byte
+}
+
+type Ui struct {
+	game      *Game
+	font      *text.GoTextFace
+	fontBytes []byte
 }
 
 type Game struct {
@@ -21,6 +28,7 @@ type Game struct {
 
 	// Mechanics
 	score           *Score
+	ui              *Ui
 	enemySpawnTimer *Timer
 
 	// Entities

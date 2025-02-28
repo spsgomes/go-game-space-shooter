@@ -99,8 +99,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		}
 	}
 
-	// Score: Draw
-	g.score.Draw(screen)
+	// Ui: Draw
+	g.ui.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -154,6 +154,9 @@ func NewGame(configs map[string]string) *Game {
 		// Misc.
 		oneSecondTimer: NewTimer(1000 * time.Millisecond),
 	}
+
+	// Attach the game UI
+	g.ui = NewUi(g)
 
 	// Trigger enemy spawner once on init
 	g.enemySpawnTimer.TriggerNow()

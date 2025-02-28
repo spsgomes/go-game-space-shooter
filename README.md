@@ -10,7 +10,7 @@ This is not meant to be a *production-ready* project, instead it aims to enable 
   For clarification on using seeds for random number generators: [Random Seeds and Reproducibility](https://medium.com/towards-data-science/random-seeds-and-reproducibility-933da79446e3) by Daniel Godoy.
 
 ## To Do
-- [ ] Add UI (e.g. Player Health; Death Screen; etc.)
+- [X] Add UI (e.g. Player Health; Death Screen; etc.)
 - [ ] Save the High Score to disk for score permanence
 - [ ] Add a main menu, and "Retry" button
 - [ ] Add SFX for player and enemy damage
