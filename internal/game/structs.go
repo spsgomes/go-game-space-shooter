@@ -9,10 +9,8 @@ import (
 )
 
 type Score struct {
-	best      int64
-	current   int64
-	font      *text.GoTextFace
-	fontBytes []byte
+	best    int64
+	current int64
 }
 
 type Ui struct {
