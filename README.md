@@ -29,13 +29,15 @@ git clone https://github.com/spsgomes/go-game-space-shooter.git
 cd go-game-space-shooter
 ```
 
-### Run the game
+### Build & Run
+If you prefer not using `make`, here are the commands necessary to run and build the project:
+
+#### Run
 ```sh
 go run cmd/go-game-space-shooter/main.go
 ```
 
-### Build the game
-To build for your current OS:
+#### Build
 ```sh
 go build ./cmd/go-game-space-shooter/
 ./go-game-space-shooter
@@ -76,7 +78,8 @@ ENEMY_SPAWN_TIME: 10
 ```
 
 ## Dependencies
-- [Ebiten](https://ebitengine.org/) for 2D graphics game engine
+- [Ebiten](https://ebitengine.org/) for 2D graphics game engine.\
+  If you're using macOS or Linux, please visit [Ebiten Install page](https://ebitengine.org/en/documents/install.html) as the package requires some dependencies.
 
 ## Assets
 - Art: [Space Shooter Redux by Kenney](https://kenney.nl/assets/space-shooter-redux)
