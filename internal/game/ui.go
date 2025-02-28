@@ -4,6 +4,7 @@ import (
 	"bytes"
 	_ "embed"
 	"go-game-space-shooter/internal/assets"
+	"math"
 	"strconv"
 	"strings"
 
@@ -29,7 +30,14 @@ func NewUi(game *Game) *Ui {
 	}
 
 	return &Ui{
-		game:      game,
+		game: game,
+		background: &Background{
+			filename: "background",
+			ticker:   0.0,
+			velocity: 0.5,
+			oDx:      1.0,
+			oDy:      1.0,
+		},
 		font:      font,
 		fontBytes: fontTrainOneRegularTTF,
 	}
@@ -47,6 +55,31 @@ func (u *Ui) Draw(screen *ebiten.Image) {
 
 	// Draw score
 	u.drawScore(screen)
+}
+
+func (u *Ui) DrawBackground(screen *ebiten.Image) {
+	sprite, err := assets.NewSprite("background")
+	if err != nil {
+		HandleError(err)
+	}
+
+	wsX, wsY := GetWindowSize()
+
+	op := &ebiten.DrawImageOptions{}
+
+	for x := -1; x < int(math.Ceil(wsX/background_size)); x++ {
+		for y := -1; y < int(math.Ceil(wsY/background_size)); y++ {
+			op.GeoM.Translate(float64(x*background_size)+u.background.ticker*u.background.oDx*u.background.velocity, float64(y*background_size)+u.background.ticker*u.background.oDy*u.background.velocity)
+			screen.DrawImage(sprite.Image, op)
+			op.GeoM.Reset()
+		}
+	}
+
+	u.background.ticker++
+
+	if u.background.ticker*u.background.oDx*u.background.velocity > background_size {
+		u.background.ticker = 0
+	}
 }
 
 func (u *Ui) drawDeathScreen(screen *ebiten.Image) {

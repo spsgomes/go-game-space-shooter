@@ -1,9 +1,7 @@
 package game
 
 import (
-	"go-game-space-shooter/internal/assets"
 	"go-game-space-shooter/internal/audio"
-	"math"
 	"math/rand"
 	"strconv"
 	"time"
@@ -80,7 +78,7 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 
 	// Background Draw
-	g.drawBackground(screen)
+	g.ui.DrawBackground(screen)
 
 	// Projectile: Draw
 	if len(g.projectiles) > 0 {
@@ -172,24 +170,4 @@ func NewGame(configs map[string]string) *Game {
 	g.music.Play()
 
 	return g
-}
-
-func (g *Game) drawBackground(screen *ebiten.Image) {
-	sprite, err := assets.NewSprite("background")
-	if err != nil {
-		HandleError(err)
-	}
-
-	wsX, wsY := GetWindowSize()
-
-	op := &ebiten.DrawImageOptions{}
-
-	for x := 0; x < int(math.Ceil(wsX/background_size)); x++ {
-		for y := 0; y < int(math.Ceil(wsY/background_size)); y++ {
-			op.GeoM.Translate(float64(x*background_size), float64(y*background_size))
-			screen.DrawImage(sprite.Image, op)
-			op.GeoM.Reset()
-		}
-	}
-
 }

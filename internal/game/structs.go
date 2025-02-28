@@ -13,10 +13,19 @@ type Score struct {
 	current int64
 }
 
+type Background struct {
+	filename string
+	ticker   float64
+	velocity float64
+	oDx      float64
+	oDy      float64
+}
+
 type Ui struct {
-	game      *Game
-	font      *text.GoTextFace
-	fontBytes []byte
+	game       *Game
+	background *Background
+	font       *text.GoTextFace
+	fontBytes  []byte
 }
 
 type Game struct {
