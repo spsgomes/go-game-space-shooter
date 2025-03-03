@@ -72,6 +72,16 @@ func (g *Game) Update() error {
 		}
 	}
 
+	// Save Game on Death
+	if g.player.disabled && !g.hasSavedOnDeath {
+		g.hasSavedOnDeath = true
+
+		_, err := g.save.Save(g)
+		if err != nil {
+			HandleError(err)
+		}
+	}
+
 	return nil
 }
 
@@ -141,6 +151,7 @@ func NewGame(configs map[string]string) *Game {
 		// Utils
 		random: rand.New(rand.NewSource(game_seed)),
 		music:  music,
+		save:   NewSave(),
 
 		// Mechanics
 		score:           NewScore(),
@@ -148,6 +159,9 @@ func NewGame(configs map[string]string) *Game {
 
 		// Entities
 		player: NewPlayer(),
+
+		// Flags
+		hasSavedOnDeath: false,
 
 		// Misc.
 		oneSecondTimer: NewTimer(1000 * time.Millisecond),
@@ -168,6 +182,9 @@ func NewGame(configs map[string]string) *Game {
 	// Play the music
 	g.music.SetVolume(music_volume)
 	g.music.Play()
+
+	// Load the Save
+	g.save.LoadSave(g, false)
 
 	return g
 }

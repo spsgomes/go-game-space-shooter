@@ -26,7 +26,7 @@ tidy:
 build:
 	go build -o=/tmp/bin/${BINARY_NAME} ${PACKAGE_PATH}
 
-## run: run the  application
+## run: run the application
 .PHONY: run
 run: build
 	/tmp/bin/${BINARY_NAME}

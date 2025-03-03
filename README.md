@@ -11,7 +11,7 @@ This is not meant to be a *production-ready* project, instead it aims to enable 
 
 ## To Do
 - [X] Add UI (e.g. Player Health; Death Screen; etc.)
-- [ ] Save the High Score to disk for score permanence
+- [X] Save the High Score to disk for score permanence
 - [ ] Add a main menu, and "Retry" button
 - [ ] Add SFX for player and enemy damage
 - [ ] Add Power-ups (Health Pickup; Damage Boosters; Critical Chance; Critical Modifier; etc.)
@@ -76,6 +76,13 @@ To change the enemy wave spawn time:
 ```go
 ENEMY_SPAWN_TIME: 10
 ```
+
+## Notes
+The game saves to the user configuration folder.\
+This can typically be found in:
+- Windows: `%AppData%`
+- MacOS: `~/Library/application Support`
+- Unix Systems: `$XDG_CONFIG_HOME` as specified by https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 
 ## Dependencies
 - [Ebiten](https://ebitengine.org/) for 2D graphics game engine.\

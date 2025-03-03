@@ -19,6 +19,10 @@ func (s *Score) GetHighScore() int64 {
 	return s.best
 }
 
+func (s *Score) SetHighScore(highscore int64) {
+	s.best = highscore
+}
+
 func (s *Score) AddScore(add int64) {
 	s.current += add
 

@@ -28,10 +28,17 @@ type Ui struct {
 	fontBytes  []byte
 }
 
+type Save struct {
+	path     string
+	filename string
+	data     map[string]any
+}
+
 type Game struct {
 	// Utils
 	random *rand.Rand
 	music  *audio.Audio
+	save   *Save
 
 	// Mechanics
 	score           *Score
@@ -42,6 +49,9 @@ type Game struct {
 	player      *Player
 	enemies     []*Enemy
 	projectiles []*Projectile
+
+	// Flags
+	hasSavedOnDeath bool
 
 	// Misc.
 	oneSecondTimer *Timer
