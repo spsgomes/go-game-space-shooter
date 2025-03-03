@@ -15,6 +15,10 @@ func (s *Score) GetScore() int64 {
 	return s.current
 }
 
+func (s *Score) ResetScore() {
+	s.current = 0
+}
+
 func (s *Score) GetHighScore() int64 {
 	return s.best
 }

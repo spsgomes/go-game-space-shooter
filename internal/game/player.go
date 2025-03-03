@@ -69,8 +69,10 @@ func (p *Player) Update(g *Game) {
 		return
 	}
 
-	p.updateMovement()
-	p.updateAttack(g)
+	if g.state == GameStatePlaying {
+		p.updateMovement()
+		p.updateAttack(g)
+	}
 }
 
 func (p *Player) Draw(screen *ebiten.Image) {

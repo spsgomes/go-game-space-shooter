@@ -34,11 +34,21 @@ type Save struct {
 	data     map[string]any
 }
 
+type GameState int
+
+const (
+	GameStateInitial = iota
+	GameStatePlaying
+	GameStatePaused
+	GameStateDeath
+)
+
 type Game struct {
 	// Utils
 	random *rand.Rand
 	music  *audio.Audio
 	save   *Save
+	state  GameState
 
 	// Mechanics
 	score           *Score

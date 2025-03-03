@@ -2,14 +2,18 @@ package game
 
 import (
 	"bytes"
-	_ "embed"
 	"go-game-space-shooter/internal/assets"
+	"image/color"
 	"math"
+	"os"
+	"slices"
 	"strconv"
 	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 func NewUi(game *Game) *Ui {
@@ -43,18 +47,53 @@ func NewUi(game *Game) *Ui {
 	}
 }
 
+func (u *Ui) Update() error {
+	// Pause/Unpause
+	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		if u.game.state == GameStatePlaying {
+			u.game.state = GameStatePaused
+		} else if u.game.state == GameStatePaused {
+			u.game.state = GameStatePlaying
+		}
+	}
+
+	// Start game
+	if u.game.state == GameStateInitial && inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+		u.game.state = GameStatePlaying
+	}
+
+	// Exit game
+	if (u.game.state == GameStateInitial || u.game.state == GameStateDeath) && inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		os.Exit(0)
+	}
+
+	// Restart game
+	if u.game.state == GameStateDeath && inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+		u.game.Restart()
+		u.game.state = GameStatePlaying
+	}
+
+	return nil
+}
+
 func (u *Ui) Draw(screen *ebiten.Image) {
 
-	// Player is dead
-	if u.game.player.disabled {
+	switch u.game.state {
+	case GameStateInitial:
+		u.drawMainMenu(screen)
+	case GameStateDeath:
 		u.drawDeathScreen(screen)
+	case GameStatePaused:
+		u.drawPauseScreen(screen)
+		u.drawHpBar(screen)
 
-	} else {
+	case GameStatePlaying:
 		u.drawHpBar(screen)
 	}
 
-	// Draw score
-	u.drawScore(screen)
+	if u.game.state != GameStateInitial {
+		u.drawScore(screen)
+	}
 }
 
 func (u *Ui) DrawBackground(screen *ebiten.Image) {
@@ -75,24 +114,81 @@ func (u *Ui) DrawBackground(screen *ebiten.Image) {
 		}
 	}
 
-	u.background.ticker++
+	if slices.Contains([]GameState{GameStateInitial, GameStatePlaying, GameStateDeath}, u.game.state) {
+		u.background.ticker++
 
-	if u.background.ticker*u.background.oDx*u.background.velocity > background_size {
-		u.background.ticker = 0
+		if u.background.ticker*u.background.oDx*u.background.velocity > background_size {
+			u.background.ticker = 0
+		}
 	}
 }
 
-func (u *Ui) drawDeathScreen(screen *ebiten.Image) {
+func (u *Ui) drawMainMenu(screen *ebiten.Image) {
 	wsX, wsY := GetWindowSize()
 
 	op := &text.DrawOptions{}
-	op.LineSpacing = 20
+	op.LineSpacing = 30
 	u.font.Size = 100
 	op.ColorScale.Reset()
-	op.ColorScale.Scale(255/255.0, 0/255.0, 0/255.0, 255/2/255.0)
+	op.ColorScale.Scale(10/255.0, 191/255.0, 245/255.0, 255/2/255.0)
 	op.PrimaryAlign = text.AlignCenter
 
-	str := "YOU ARE DEAD"
+	str := "Space Shooter!"
+
+	_, textH := text.Measure(str, u.font, op.LineSpacing)
+
+	op.GeoM.Translate(wsX/2.0, wsY/4.0-textH/2.0)
+	text.Draw(screen, str, u.font, op)
+	op.GeoM.Reset()
+
+	u.font.Size = 24
+	op.ColorScale.Reset()
+	op.ColorScale.Scale(255/255.0, 255/255.0, 255/255.0, 255/2/255.0)
+	op.PrimaryAlign = text.AlignCenter
+
+	str = "press space to start\nor escape to quit"
+
+	_, textH = text.Measure(str, u.font, op.LineSpacing)
+
+	op.GeoM.Translate(wsX/2.0, wsY/4.0+textH+op.LineSpacing)
+	text.Draw(screen, str, u.font, op)
+	op.GeoM.Reset()
+
+	op.LineSpacing = 20
+	u.font.Size = 16
+	op.ColorScale.Reset()
+	op.ColorScale.Scale(255/255.0, 255/255.0, 255/255.0, 255/2/255.0)
+	op.PrimaryAlign = text.AlignStart
+
+	str =
+		`Controls
+W: Up
+S: Down
+A: Left
+D: Right
+Space/Left Click: Shoot
+Escape: Pause/Unpause`
+
+	_, textH = text.Measure(str, u.font, op.LineSpacing)
+
+	op.GeoM.Translate(window_padding, wsY-window_padding-textH)
+	text.Draw(screen, str, u.font, op)
+	op.GeoM.Reset()
+}
+
+func (u *Ui) drawPauseScreen(screen *ebiten.Image) {
+	wsX, wsY := GetWindowSize()
+
+	vector.DrawFilledRect(screen, 0, 0, float32(wsX), float32(wsY), color.RGBA{0, 0, 0, uint8(math.Floor(255 * 0.5))}, true)
+
+	op := &text.DrawOptions{}
+	op.LineSpacing = 30
+	u.font.Size = 100
+	op.ColorScale.Reset()
+	op.ColorScale.Scale(10/255.0, 191/255.0, 245/255.0, 255/2/255.0)
+	op.PrimaryAlign = text.AlignCenter
+
+	str := "PAUSED"
 
 	_, textH := text.Measure(str, u.font, op.LineSpacing)
 
@@ -102,14 +198,62 @@ func (u *Ui) drawDeathScreen(screen *ebiten.Image) {
 
 	u.font.Size = 24
 	op.ColorScale.Reset()
+	op.ColorScale.Scale(255/255.0, 255/255.0, 255/255.0, 255/2/255.0)
+	op.PrimaryAlign = text.AlignCenter
+
+	str = "press escape to continue"
+
+	_, textH = text.Measure(str, u.font, op.LineSpacing)
+
+	op.GeoM.Translate(wsX/2.0, wsY/2.0+textH+op.LineSpacing)
+	text.Draw(screen, str, u.font, op)
+	op.GeoM.Reset()
+
+}
+
+func (u *Ui) drawDeathScreen(screen *ebiten.Image) {
+	wsX, wsY := GetWindowSize()
+
+	op := &text.DrawOptions{}
+	op.LineSpacing = 0
+	u.font.Size = 100
+	op.ColorScale.Reset()
+	op.ColorScale.Scale(255/255.0, 0/255.0, 0/255.0, 255/2/255.0)
+	op.PrimaryAlign = text.AlignCenter
+
+	str := "YOU ARE DEAD"
+
+	_, textH := text.Measure(str, u.font, op.LineSpacing)
+
+	op.GeoM.Translate(wsX/2.0, wsY/2.0-textH/2.0-20)
+	text.Draw(screen, str, u.font, op)
+	op.GeoM.Reset()
+
+	op.LineSpacing = 20
+	u.font.Size = 24
+	op.ColorScale.Reset()
 	op.ColorScale.Scale(255/255.0, 0/255.0, 0/255.0, 255/2/255.0)
 	op.PrimaryAlign = text.AlignCenter
 
 	str = "nice try though"
 
-	_, textH = text.Measure(str, u.font, op.LineSpacing)
+	_, textH2 := text.Measure(str, u.font, op.LineSpacing)
 
-	op.GeoM.Translate(wsX/2.0, wsY/2.0+textH+op.LineSpacing)
+	op.GeoM.Translate(wsX/2.0, wsY/2.0+textH2+op.LineSpacing-20)
+	text.Draw(screen, str, u.font, op)
+	op.GeoM.Reset()
+
+	op.LineSpacing = 30
+	u.font.Size = 24
+	op.ColorScale.Reset()
+	op.ColorScale.Scale(255/255.0, 255/255.0, 255/255.0, 255/2/255.0)
+	op.PrimaryAlign = text.AlignCenter
+
+	str = "press space to restart\nor escape to quit"
+
+	// _, textH3 := text.Measure(str, u.font, op.LineSpacing)
+
+	op.GeoM.Translate(wsX/2.0, wsY-wsY/4.0-op.LineSpacing)
 	text.Draw(screen, str, u.font, op)
 	op.GeoM.Reset()
 }
@@ -120,7 +264,20 @@ func (u *Ui) drawHpBar(screen *ebiten.Image) {
 	op := &text.DrawOptions{}
 	u.font.Size = 20
 	op.ColorScale.Reset()
-	op.ColorScale.Scale(10/255.0, 191/255.0, 245/255.0, 255/2/255.0)
+
+	if u.game.player.character.hp.current <= u.game.player.character.hp.max*0.25 {
+		// Low Health
+		op.ColorScale.Scale(255/255.0, 0/255.0, 0/255.0, 255/2/255.0)
+
+	} else if u.game.player.character.hp.current <= u.game.player.character.hp.max*0.5 {
+		// Median Health
+		op.ColorScale.Scale(255/255.0, 255/255.0, 0/255.0, 255/2/255.0)
+
+	} else {
+		// Default
+		op.ColorScale.Scale(10/255.0, 191/255.0, 245/255.0, 255/2/255.0)
+	}
+
 	op.PrimaryAlign = text.AlignStart
 
 	strs := []string{

@@ -17,30 +17,52 @@ const (
 var max_enemies_per_wave int
 
 func (g *Game) Update() error {
+
+	// UI: Update
+	g.ui.Update()
+
+	// Player: Update
 	g.player.Update(g)
 
-	// Enemy: Update
-	if len(g.enemies) > 0 {
-		for _, enemy := range g.enemies {
-			enemy.Update(g, g.player)
+	// Player is dead
+	if g.player.disabled {
+		g.state = GameStateDeath
+	}
+
+	// Save Game on Death
+	if g.state == GameStateDeath && !g.hasSavedOnDeath {
+		g.hasSavedOnDeath = true
+
+		_, err := g.save.Save(g)
+		if err != nil {
+			HandleError(err)
 		}
 	}
 
-	// Projectile: Update
-	if len(g.projectiles) > 0 {
-		for _, projectile := range g.projectiles {
-			projectile.Update(g)
+	if g.state == GameStatePlaying {
+		// Enemy: Update
+		if len(g.enemies) > 0 {
+			for _, enemy := range g.enemies {
+				enemy.Update(g, g.player)
+			}
 		}
-	}
 
-	// Enemy: Spawn timer
-	g.enemySpawnTimer.Update()
-	if g.enemySpawnTimer.IsReady() {
-		g.enemySpawnTimer.Reset()
+		// Projectile: Update
+		if len(g.projectiles) > 0 {
+			for _, projectile := range g.projectiles {
+				projectile.Update(g)
+			}
+		}
 
-		// Only spawn enemies if the player isn't dead
-		if !g.player.disabled {
-			g.enemies = SpawnEnemies(g.random, g.enemies, max_enemies_per_wave)
+		// Enemy: Spawn timer
+		g.enemySpawnTimer.Update()
+		if g.enemySpawnTimer.IsReady() {
+			g.enemySpawnTimer.Reset()
+
+			// Only spawn enemies if the player isn't dead
+			if g.state == GameStatePlaying {
+				g.enemies = SpawnEnemies(g.random, g.enemies, max_enemies_per_wave)
+			}
 		}
 	}
 
@@ -72,16 +94,6 @@ func (g *Game) Update() error {
 		}
 	}
 
-	// Save Game on Death
-	if g.player.disabled && !g.hasSavedOnDeath {
-		g.hasSavedOnDeath = true
-
-		_, err := g.save.Save(g)
-		if err != nil {
-			HandleError(err)
-		}
-	}
-
 	return nil
 }
 
@@ -90,20 +102,23 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	// Background Draw
 	g.ui.DrawBackground(screen)
 
-	// Projectile: Draw
-	if len(g.projectiles) > 0 {
-		for _, projectile := range g.projectiles {
-			projectile.Draw(screen)
+	// Game State: Playing
+	if g.state == GameStatePlaying || g.state == GameStatePaused {
+		// Projectile: Draw
+		if len(g.projectiles) > 0 {
+			for _, projectile := range g.projectiles {
+				projectile.Draw(screen)
+			}
 		}
-	}
 
-	// Player: Draw
-	g.player.Draw(screen)
+		// Player: Draw
+		g.player.Draw(screen)
 
-	// Enemy: Draw
-	if len(g.enemies) > 0 {
-		for _, enemy := range g.enemies {
-			enemy.Draw(screen)
+		// Enemy: Draw
+		if len(g.enemies) > 0 {
+			for _, enemy := range g.enemies {
+				enemy.Draw(screen)
+			}
 		}
 	}
 
@@ -152,6 +167,7 @@ func NewGame(configs map[string]string) *Game {
 		random: rand.New(rand.NewSource(game_seed)),
 		music:  music,
 		save:   NewSave(),
+		state:  GameStateInitial,
 
 		// Mechanics
 		score:           NewScore(),
@@ -187,4 +203,28 @@ func NewGame(configs map[string]string) *Game {
 	g.save.LoadSave(g, false)
 
 	return g
+}
+
+// Restarts the game
+func (g *Game) Restart() {
+
+	// Reset Score
+	g.score.ResetScore()
+
+	// Reset Entities
+	g.player = NewPlayer()
+	g.enemies = nil
+	g.projectiles = nil
+
+	// Reset Flags
+	g.hasSavedOnDeath = false
+
+	// Reset Timers
+	g.enemySpawnTimer.Reset()
+	g.oneSecondTimer.Reset()
+
+	// Trigger enemy spawner once restart
+	g.enemySpawnTimer.TriggerNow()
+
+	g.state = GameStatePlaying
 }

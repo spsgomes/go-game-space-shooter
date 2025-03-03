@@ -12,7 +12,7 @@ This is not meant to be a *production-ready* project, instead it aims to enable 
 ## To Do
 - [X] Add UI (e.g. Player Health; Death Screen; etc.)
 - [X] Save the High Score to disk for score permanence
-- [ ] Add a main menu, and "Retry" button
+- [X] Add a main menu, and "Retry" button
 - [ ] Add SFX for player and enemy damage
 - [ ] Add Power-ups (Health Pickup; Damage Boosters; Critical Chance; Critical Modifier; etc.)
 - [ ] Add statistics to UI (Current Damage; Current Critical Chance & Modifier; etc.)
