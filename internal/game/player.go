@@ -23,6 +23,11 @@ func NewPlayer() *Player {
 		HandleError(err)
 	}
 
+	hitAudio, err := audio.NewAudio("damage2.wav", "wav")
+	if err != nil {
+		HandleError(err)
+	}
+
 	wsX, wsY := GetWindowSize()
 
 	player := Player{
@@ -51,6 +56,7 @@ func NewPlayer() *Player {
 			velocity:   10.0,
 			damage:     5.0,
 			audio:      attackAudio,
+			hitAudio:   hitAudio,
 		},
 	}
 
@@ -268,7 +274,7 @@ func (p *Player) updateAttack(g *Game) {
 			projectileY := p.character.position.vector.y - ((float64(p.character.sprite.Image.Bounds().Dy())) / 2.0)
 
 			// Create a new projectile
-			projectile := NewProjectile("player", p.character, p.attack.spriteName, projectileX, projectileY, p.character.position.angle, p.attack.velocity, p.attack.damage)
+			projectile := NewProjectile("player", p.character, p.attack.spriteName, projectileX, projectileY, p.character.position.angle, p.attack.velocity, p.attack.damage, p.attack.hitAudio)
 			projectile.SetProjectileDirection(GetCursorVector())
 
 			// Add to projectile list

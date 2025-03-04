@@ -2,6 +2,7 @@ package game
 
 import (
 	"go-game-space-shooter/internal/assets"
+	"go-game-space-shooter/internal/audio"
 	"image"
 	"image/color"
 	"math"
@@ -10,7 +11,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
-func NewProjectile(ownerTag string, owner *Character, spriteName string, x float64, y float64, initialAngle float64, velocity float64, damage float64) *Projectile {
+func NewProjectile(ownerTag string, owner *Character, spriteName string, x float64, y float64, initialAngle float64, velocity float64, damage float64, hitAudio *audio.Audio) *Projectile {
 	sprite, err := assets.NewSprite(spriteName)
 	if err != nil {
 		HandleError(err)
@@ -32,6 +33,7 @@ func NewProjectile(ownerTag string, owner *Character, spriteName string, x float
 			oDy:   0,
 			angle: initialAngle,
 		},
+		hitAudio: hitAudio,
 		ownerTag: ownerTag,
 		owner:    *owner,
 		damage:   damage,
@@ -112,7 +114,14 @@ func (p *Projectile) checkCollisions(g *Game) {
 	// Check collisions with Player
 	if p.ownerTag == "enemy" {
 		if !g.player.disabled && srcRect.Overlaps(image.Rect(g.player.character.position.collision.x0, g.player.character.position.collision.y0, g.player.character.position.collision.x1, g.player.character.position.collision.y1)) {
+
+			// Play the hit audio
+			p.hitAudio.Play()
+
+			// Remove from player's HP
 			g.player.OffsetHp(-p.damage)
+
+			// Disable the projectile
 			p.disabled = true
 		}
 
@@ -121,9 +130,17 @@ func (p *Projectile) checkCollisions(g *Game) {
 		for _, enemy := range g.enemies {
 
 			if !enemy.disabled && srcRect.Overlaps(image.Rect(enemy.character.position.collision.x0, enemy.character.position.collision.y0, enemy.character.position.collision.x1, enemy.character.position.collision.y1)) {
+
+				// Play the hit audio
+				p.hitAudio.Play()
+
+				// Remove from enemy's HP
 				enemy.OffsetHp(-p.damage)
+
+				// Disable the projectile
 				p.disabled = true
 
+				// If enemy was killed, add to score
 				if enemy.disabled {
 					// ? DEBUG
 					// fmt.Println("enemy killed, awards points:", enemy.worthPoints)
@@ -132,6 +149,5 @@ func (p *Projectile) checkCollisions(g *Game) {
 				}
 			}
 		}
-
 	}
 }

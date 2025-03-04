@@ -2,6 +2,7 @@ package game
 
 import (
 	"go-game-space-shooter/internal/assets"
+	"go-game-space-shooter/internal/audio"
 	"image/color"
 	"math"
 	"math/rand"
@@ -14,6 +15,11 @@ import (
 
 func NewEnemy(spriteName string, x float64, y float64, angle float64) *Enemy {
 	sprite, err := assets.NewSprite(spriteName)
+	if err != nil {
+		HandleError(err)
+	}
+
+	hitAudio, err := audio.NewAudio("damage1.mp3", "mp3")
 	if err != nil {
 		HandleError(err)
 	}
@@ -42,6 +48,7 @@ func NewEnemy(spriteName string, x float64, y float64, angle float64) *Enemy {
 			fireRate:   0.5,
 			velocity:   5.0,
 			damage:     10.0,
+			hitAudio:   hitAudio,
 		},
 		worthPoints:         10,
 		minLengthFromPlayer: 200.0,
@@ -288,7 +295,7 @@ func (e *Enemy) updateAttack(g *Game) {
 		projectileY := e.character.position.vector.y - ((float64(e.character.sprite.Image.Bounds().Dy())) / 2.0)
 
 		// Create a new projectile
-		projectile := NewProjectile("enemy", e.character, e.attack.spriteName, projectileX, projectileY, e.character.position.angle, e.attack.velocity, e.attack.damage)
+		projectile := NewProjectile("enemy", e.character, e.attack.spriteName, projectileX, projectileY, e.character.position.angle, e.attack.velocity, e.attack.damage, e.attack.hitAudio)
 		projectile.SetProjectileDirection(g.player.character.position.vector)
 
 		// Add to projectile list

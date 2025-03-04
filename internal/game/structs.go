@@ -123,6 +123,7 @@ type Attack struct {
 	damage     float64
 	timer      *Timer
 	audio      *audio.Audio
+	hitAudio   *audio.Audio
 }
 
 type Player struct {
@@ -147,6 +148,7 @@ type Projectile struct {
 	sprite    *assets.Sprite
 	movement  *Movement
 	direction *MovementDirection
+	hitAudio  *audio.Audio
 	ownerTag  string
 	owner     Character
 	damage    float64
