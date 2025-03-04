@@ -85,10 +85,12 @@ func (u *Ui) Draw(screen *ebiten.Image) {
 		u.drawDeathScreen(screen)
 	case GameStatePaused:
 		u.drawPauseScreen(screen)
-		u.drawHpBar(screen)
+		u.drawEnemiesHpBar(screen)
+		u.drawPlayerHpBar(screen)
 
 	case GameStatePlaying:
-		u.drawHpBar(screen)
+		u.drawEnemiesHpBar(screen)
+		u.drawPlayerHpBar(screen)
 	}
 
 	if u.game.state != GameStateInitial {
@@ -258,7 +260,7 @@ func (u *Ui) drawDeathScreen(screen *ebiten.Image) {
 	op.GeoM.Reset()
 }
 
-func (u *Ui) drawHpBar(screen *ebiten.Image) {
+func (u *Ui) drawPlayerHpBar(screen *ebiten.Image) {
 	_, wsY := GetWindowSize()
 
 	op := &text.DrawOptions{}
@@ -291,6 +293,30 @@ func (u *Ui) drawHpBar(screen *ebiten.Image) {
 	op.GeoM.Translate(window_padding, wsY-window_padding-textH)
 	text.Draw(screen, str, u.font, op)
 	op.GeoM.Reset()
+}
+
+func (u *Ui) drawEnemiesHpBar(screen *ebiten.Image) {
+
+	// Loop through enemies
+	if len(u.game.enemies) > 0 {
+		for _, enemy := range u.game.enemies {
+			if enemy.character.position.collision != nil && !enemy.disabled {
+
+				posX := float32(enemy.character.position.collision.x0)
+				posY := float32(enemy.character.position.collision.y0 - 20)
+				posW := float32(enemy.character.position.collision.x1 - enemy.character.position.collision.x0)
+				posH := float32(8.0)
+
+				vector.StrokeRect(screen, posX, posY, posW, posH, 1.0, color.RGBA{255, 255, 255, 1}, true)
+
+				posW *= float32(enemy.character.hp.current*100/enemy.character.hp.max) / 100
+
+				vector.DrawFilledRect(screen, posX+1, posY+1, posW-1, posH-1, color.RGBA{255, 0, 0, 1}, true)
+
+				// vector.StrokeRect(screen, )
+			}
+		}
+	}
 }
 
 func (u *Ui) drawScore(screen *ebiten.Image) {

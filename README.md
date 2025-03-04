@@ -14,9 +14,9 @@ This is not meant to be a *production-ready* project, instead it aims to enable 
 - [X] Save the High Score to disk for score permanence
 - [X] Add a main menu, and "Retry" button
 - [X] Add SFX for player and enemy damage
+- [X] HP bars on top of enemies
 - [ ] Add Power-ups (Health Pickup; Damage Boosters; Critical Chance; Critical Modifier; etc.)
 - [ ] Add statistics to UI (Current Damage; Current Critical Chance & Modifier; etc.)
-- [ ] HP bars on top of enemies
 
 ## Installation
 
