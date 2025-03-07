@@ -3,7 +3,7 @@
 This small project was created to explore game development using Go.\
 This is not meant to be a *production-ready* project, instead it aims to enable me to explore concepts in Go, mathematics, 2D graphics, SFX, and game design.
 
-## Features
+# Features
 - Built using Go, with [Ebiten](https://ebitengine.org/) as a 2D graphics game engine
 - Cross-platform compatibility
 - Pseudo-randomness using seeds\
@@ -15,10 +15,17 @@ This is not meant to be a *production-ready* project, instead it aims to enable 
 - [X] Add a main menu, and "Retry" button
 - [X] Add SFX for player and enemy damage
 - [X] HP bars on top of enemies
+
+### If time allows
 - [ ] Add Power-ups (Health Pickup; Damage Boosters; Critical Chance; Critical Modifier; etc.)
 - [ ] Add statistics to UI (Current Damage; Current Critical Chance & Modifier; etc.)
+- [ ] Add stronger enemies based on wave progression
+- [ ] Add boss enemy based on wave progression
+- [ ] Add "Play" button to main menu
+- [ ] Add "Quit" button to main menu
+- [ ] Add "Settings" menu, with button in main menu
 
-## Installation
+# Installation
 
 ### Prerequisites
 - Install [Golang](https://go.dev/dl/). This project was developed in version `1.24.0`, on `windows/amd64`.
@@ -50,19 +57,21 @@ go build -o game.exe ./cmd/go-game-space-shooter/
 ./game.exe
 ```
 
-## How to Play
+# How to Play
 
 ### Controls
 - `W Key`: Up
 - `S Key`: Down
 - `A Key`: Left
 - `D Key`: Right
-- `Space` / `Left Click`: Shoot
+- `Space`/`Left Click`: Shoot
+- `Esc`: Pause/Continue
 
 ### Objective
 Destroy the enemy ships, and earn a High Score!
 
-## Configurations
+
+# Configuration
 You can specify certain configurations (such as window size, enable fullscreen, etc.) by changing the file in `./configs.env`.
 
 ### Examples
