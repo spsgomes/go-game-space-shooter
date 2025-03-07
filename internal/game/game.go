@@ -148,6 +148,11 @@ func NewGame(configs map[string]string) *Game {
 		HandleError(err)
 	}
 
+	// Game Seed: If 0, generate a new one everytime
+	if game_seed == 0 {
+		game_seed = time.Now().UnixNano()
+	}
+
 	// Config: Enemy Spawn Time
 	enemy_spawn_time, err := strconv.ParseInt(Configs["ENEMY_SPAWN_TIME"], 10, 0)
 	if err != nil {
