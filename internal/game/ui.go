@@ -87,10 +87,12 @@ func (u *Ui) Draw(screen *ebiten.Image) {
 		u.drawPauseScreen(screen)
 		u.drawEnemiesHpBar(screen)
 		u.drawPlayerHpBar(screen)
+		u.drawPlayerStats(screen)
 
 	case GameStatePlaying:
 		u.drawEnemiesHpBar(screen)
 		u.drawPlayerHpBar(screen)
+		u.drawPlayerStats(screen)
 	}
 
 	if u.game.state != GameStateInitial {
@@ -295,6 +297,49 @@ func (u *Ui) drawPlayerHpBar(screen *ebiten.Image) {
 	op.GeoM.Reset()
 }
 
+func (u *Ui) drawPlayerStats(screen *ebiten.Image) {
+	wsX, wsY := GetWindowSize()
+
+	op := &text.DrawOptions{}
+	op.LineSpacing = 20
+	u.font.Size = 16
+	op.ColorScale.Reset()
+
+	op.ColorScale.Scale(255/255.0, 255/255.0, 255/255.0, 255/2/255.0)
+
+	op.PrimaryAlign = text.AlignStart
+
+	strs := []string{
+		strconv.FormatFloat(u.game.player.attack.damage, 'f', 2, 64),
+		strconv.FormatFloat(u.game.player.attack.criticalChance, 'f', 2, 64) + "%",
+		"x" + strconv.FormatFloat(u.game.player.attack.criticalModifier, 'f', 2, 64),
+	}
+	str := strings.Join(strs, "\n")
+
+	textW, textH := text.Measure(str, u.font, op.LineSpacing)
+
+	if textW < 70 {
+		textW = 70
+	}
+
+	op.GeoM.Translate(wsX-window_padding-textW, wsY-window_padding-textH)
+	text.Draw(screen, str, u.font, op)
+	op.GeoM.Reset()
+
+	op.PrimaryAlign = text.AlignEnd
+
+	strs = []string{
+		"Damage: ",
+		"Crit. Chance: ",
+		"Crit. Modifier: ",
+	}
+	str = strings.Join(strs, "\n")
+
+	op.GeoM.Translate(wsX-window_padding-textW, wsY-window_padding-textH)
+	text.Draw(screen, str, u.font, op)
+	op.GeoM.Reset()
+}
+
 func (u *Ui) drawEnemiesHpBar(screen *ebiten.Image) {
 
 	// Loop through enemies
@@ -312,8 +357,6 @@ func (u *Ui) drawEnemiesHpBar(screen *ebiten.Image) {
 				posW *= float32(enemy.character.hp.current*100/enemy.character.hp.max) / 100
 
 				vector.DrawFilledRect(screen, posX+1, posY+1, posW-1, posH-1, color.RGBA{255, 0, 0, 1}, true)
-
-				// vector.StrokeRect(screen, )
 			}
 		}
 	}
