@@ -124,6 +124,15 @@ func (p *Projectile) checkCollisions(g *Game) {
 
 			// Disable the projectile
 			p.disabled = true
+
+			// Add to game's damage numbers
+			g.damageNumbers = append(g.damageNumbers, DamageNumber{
+				damage:      p.damage,
+				x:           float64(g.player.character.position.collision.x0 + (g.player.character.position.collision.x1-g.player.character.position.collision.x0)/2),
+				y:           float64(g.player.character.position.collision.y0),
+				effect:      "hurt",
+				ticksPassed: 0,
+			})
 		}
 
 	} else if p.ownerTag == "player" {
@@ -137,6 +146,19 @@ func (p *Projectile) checkCollisions(g *Game) {
 
 				// Remove from enemy's HP
 				enemy.OffsetHp(-p.damage)
+
+				// Add to game's damage numbers
+				damageNumberEffect := ""
+				if p.critical {
+					damageNumberEffect = "golden"
+				}
+				g.damageNumbers = append(g.damageNumbers, DamageNumber{
+					damage:      p.damage,
+					x:           float64(enemy.character.position.collision.x0 + (enemy.character.position.collision.x1-enemy.character.position.collision.x0)/2),
+					y:           float64(enemy.character.position.collision.y0),
+					effect:      damageNumberEffect,
+					ticksPassed: 0,
+				})
 
 				// Disable the projectile
 				p.disabled = true

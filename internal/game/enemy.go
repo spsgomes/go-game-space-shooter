@@ -135,7 +135,7 @@ func (e *Enemy) OffsetHp(offset float64) {
 		e.character.hp.current = e.character.hp.max
 	}
 
-	if tmp != e.character.hp.current {
+	if tmp > e.character.hp.current {
 		// ? DEBUG
 		// fmt.Println("Enemy hit:", tmp, "->", e.character.hp.current)
 	}

@@ -120,7 +120,7 @@ func (p *Player) OffsetHp(offset float64) {
 		p.character.hp.current = p.character.hp.max
 	}
 
-	if tmp != p.character.hp.current {
+	if tmp > p.character.hp.current {
 		// ? DEBUG
 		// fmt.Println("Player hit:", tmp, "->", p.character.hp.current)
 	}

@@ -43,6 +43,14 @@ const (
 	GameStateDeath
 )
 
+type DamageNumber struct {
+	damage      float64
+	x           float64
+	y           float64
+	effect      string
+	ticksPassed int
+}
+
 type Game struct {
 	// Utils
 	random *rand.Rand
@@ -55,6 +63,7 @@ type Game struct {
 	ui               *Ui
 	enemySpawnTimer  *Timer
 	pickupSpawnTimer *Timer
+	damageNumbers    []DamageNumber
 
 	// Entities
 	player      *Player

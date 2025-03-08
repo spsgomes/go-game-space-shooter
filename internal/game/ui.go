@@ -87,11 +87,13 @@ func (u *Ui) Draw(screen *ebiten.Image) {
 		u.drawPauseScreen(screen)
 		u.drawEnemiesHpBar(screen)
 		u.drawPlayerHpBar(screen)
+		u.drawDamageNumbers(screen)
 		u.drawPlayerStats(screen)
 
 	case GameStatePlaying:
 		u.drawEnemiesHpBar(screen)
 		u.drawPlayerHpBar(screen)
+		u.drawDamageNumbers(screen)
 		u.drawPlayerStats(screen)
 	}
 
@@ -134,7 +136,7 @@ func (u *Ui) drawMainMenu(screen *ebiten.Image) {
 	op.LineSpacing = 30
 	u.font.Size = 100
 	op.ColorScale.Reset()
-	op.ColorScale.Scale(10/255.0, 191/255.0, 245/255.0, 255/2/255.0)
+	op.ColorScale.Scale(10/255.0, 191/255.0, 245/255.0, 255/255.0)
 	op.PrimaryAlign = text.AlignCenter
 
 	str := "Space Shooter!"
@@ -147,7 +149,7 @@ func (u *Ui) drawMainMenu(screen *ebiten.Image) {
 
 	u.font.Size = 24
 	op.ColorScale.Reset()
-	op.ColorScale.Scale(255/255.0, 255/255.0, 255/255.0, 255/2/255.0)
+	op.ColorScale.Scale(255/255.0, 255/255.0, 255/255.0, 255/255.0)
 	op.PrimaryAlign = text.AlignCenter
 
 	str = "press space to start\nor escape to quit"
@@ -161,7 +163,7 @@ func (u *Ui) drawMainMenu(screen *ebiten.Image) {
 	op.LineSpacing = 20
 	u.font.Size = 16
 	op.ColorScale.Reset()
-	op.ColorScale.Scale(255/255.0, 255/255.0, 255/255.0, 255/2/255.0)
+	op.ColorScale.Scale(255/255.0, 255/255.0, 255/255.0, 255/255.0)
 	op.PrimaryAlign = text.AlignStart
 
 	str =
@@ -189,7 +191,7 @@ func (u *Ui) drawPauseScreen(screen *ebiten.Image) {
 	op.LineSpacing = 30
 	u.font.Size = 100
 	op.ColorScale.Reset()
-	op.ColorScale.Scale(10/255.0, 191/255.0, 245/255.0, 255/2/255.0)
+	op.ColorScale.Scale(10/255.0, 191/255.0, 245/255.0, 255*0.5/255.0)
 	op.PrimaryAlign = text.AlignCenter
 
 	str := "PAUSED"
@@ -202,7 +204,7 @@ func (u *Ui) drawPauseScreen(screen *ebiten.Image) {
 
 	u.font.Size = 24
 	op.ColorScale.Reset()
-	op.ColorScale.Scale(255/255.0, 255/255.0, 255/255.0, 255/2/255.0)
+	op.ColorScale.Scale(255/255.0, 255/255.0, 255/255.0, 255*0.5/255.0)
 	op.PrimaryAlign = text.AlignCenter
 
 	str = "press escape to continue"
@@ -222,7 +224,7 @@ func (u *Ui) drawDeathScreen(screen *ebiten.Image) {
 	op.LineSpacing = 0
 	u.font.Size = 100
 	op.ColorScale.Reset()
-	op.ColorScale.Scale(255/255.0, 0/255.0, 0/255.0, 255/2/255.0)
+	op.ColorScale.Scale(255/255.0, 0/255.0, 0/255.0, 255/255.0)
 	op.PrimaryAlign = text.AlignCenter
 
 	str := "YOU ARE DEAD"
@@ -236,7 +238,7 @@ func (u *Ui) drawDeathScreen(screen *ebiten.Image) {
 	op.LineSpacing = 20
 	u.font.Size = 24
 	op.ColorScale.Reset()
-	op.ColorScale.Scale(255/255.0, 0/255.0, 0/255.0, 255/2/255.0)
+	op.ColorScale.Scale(255/255.0, 0/255.0, 0/255.0, 255/255.0)
 	op.PrimaryAlign = text.AlignCenter
 
 	str = "nice try though"
@@ -250,7 +252,7 @@ func (u *Ui) drawDeathScreen(screen *ebiten.Image) {
 	op.LineSpacing = 30
 	u.font.Size = 24
 	op.ColorScale.Reset()
-	op.ColorScale.Scale(255/255.0, 255/255.0, 255/255.0, 255/2/255.0)
+	op.ColorScale.Scale(255/255.0, 255/255.0, 255/255.0, 255/255.0)
 	op.PrimaryAlign = text.AlignCenter
 
 	str = "press space to restart\nor escape to quit"
@@ -271,15 +273,15 @@ func (u *Ui) drawPlayerHpBar(screen *ebiten.Image) {
 
 	if u.game.player.character.hp.current <= u.game.player.character.hp.max*0.25 {
 		// Low Health
-		op.ColorScale.Scale(255/255.0, 0/255.0, 0/255.0, 255/2/255.0)
+		op.ColorScale.Scale(255/255.0, 0/255.0, 0/255.0, 255/255.0)
 
 	} else if u.game.player.character.hp.current <= u.game.player.character.hp.max*0.5 {
 		// Median Health
-		op.ColorScale.Scale(255/255.0, 255/255.0, 0/255.0, 255/2/255.0)
+		op.ColorScale.Scale(255/255.0, 255/255.0, 0/255.0, 255/255.0)
 
 	} else {
 		// Default
-		op.ColorScale.Scale(10/255.0, 191/255.0, 245/255.0, 255/2/255.0)
+		op.ColorScale.Scale(10/255.0, 191/255.0, 245/255.0, 255/255.0)
 	}
 
 	op.PrimaryAlign = text.AlignStart
@@ -305,14 +307,14 @@ func (u *Ui) drawPlayerStats(screen *ebiten.Image) {
 	u.font.Size = 16
 	op.ColorScale.Reset()
 
-	op.ColorScale.Scale(255/255.0, 255/255.0, 255/255.0, 255/2/255.0)
+	op.ColorScale.Scale(255/255.0, 255/255.0, 255/255.0, 255/255.0)
 
 	op.PrimaryAlign = text.AlignStart
 
 	strs := []string{
-		strconv.FormatFloat(u.game.player.attack.damage, 'f', 2, 64),
-		strconv.FormatFloat(u.game.player.attack.criticalChance, 'f', 2, 64) + "%",
-		"x" + strconv.FormatFloat(u.game.player.attack.criticalModifier, 'f', 2, 64),
+		TrimTrailingZeros(strconv.FormatFloat(u.game.player.attack.damage, 'f', 2, 64)),
+		TrimTrailingZeros(strconv.FormatFloat(u.game.player.attack.criticalChance, 'f', 2, 64)) + "%",
+		"x" + TrimTrailingZeros(strconv.FormatFloat(u.game.player.attack.criticalModifier, 'f', 2, 64)),
 	}
 	str := strings.Join(strs, "\n")
 
@@ -369,7 +371,7 @@ func (u *Ui) drawScore(screen *ebiten.Image) {
 	op := &text.DrawOptions{}
 	u.font.Size = 100
 	op.ColorScale.Reset()
-	op.ColorScale.Scale(10/255.0, 191/255.0, 245/255.0, 255/2/255.0)
+	op.ColorScale.Scale(10/255.0, 191/255.0, 245/255.0, 255*0.5/255.0)
 	op.PrimaryAlign = text.AlignCenter
 
 	str := strconv.FormatInt(u.game.score.GetScore(), 10)
@@ -382,7 +384,7 @@ func (u *Ui) drawScore(screen *ebiten.Image) {
 
 	u.font.Size = 24
 	op.ColorScale.Reset()
-	op.ColorScale.Scale(10/255.0, 191/255.0, 245/255.0, 255/2/255.0)
+	op.ColorScale.Scale(10/255.0, 191/255.0, 245/255.0, 255*0.5/255.0)
 	op.PrimaryAlign = text.AlignCenter
 
 	str = strconv.FormatInt(u.game.score.GetHighScore(), 10)
@@ -390,4 +392,58 @@ func (u *Ui) drawScore(screen *ebiten.Image) {
 	op.GeoM.Translate(float64(wsX)/2.0, textH-20)
 	text.Draw(screen, "best: "+str, u.font, op)
 	op.GeoM.Reset()
+}
+
+// Draw Damage Numbers
+func (u *Ui) drawDamageNumbers(screen *ebiten.Image) {
+
+	const MAX_TICKS = 200
+
+	if len(u.game.damageNumbers) > 0 {
+		var newDamageNumbers []DamageNumber
+
+		for _, damageNumber := range u.game.damageNumbers {
+
+			op := &text.DrawOptions{}
+			op.LineSpacing = 16
+			u.font.Size = 16
+			op.ColorScale.Reset()
+
+			switch damageNumber.effect {
+			case "golden":
+				op.ColorScale.Scale(255/255.0, 223/255.0, 0/255.0, 255.0)
+			case "hurt":
+				op.ColorScale.Scale(255/255.0, 0/255.0, 0/255.0, 255.0)
+			default:
+				op.ColorScale.Scale(255/255.0, 255/255.0, 255/255.0, 255.0)
+			}
+
+			alpha := float32(MAX_TICKS-damageNumber.ticksPassed) * 1 / 100
+			if alpha < 0 {
+				alpha = 0
+			} else if alpha > 1 {
+				alpha = 1
+			}
+
+			op.ColorScale.ScaleAlpha(alpha)
+
+			op.PrimaryAlign = text.AlignCenter
+
+			str := TrimTrailingZeros(strconv.FormatFloat(damageNumber.damage, 'f', 2, 64))
+
+			op.GeoM.Translate(damageNumber.x, damageNumber.y-float64(damageNumber.ticksPassed))
+			text.Draw(screen, str, u.font, op)
+			op.GeoM.Reset()
+
+			// Live for only 100 ticks
+			if damageNumber.ticksPassed <= MAX_TICKS {
+				damageNumber.ticksPassed += 1
+
+				newDamageNumbers = append(newDamageNumbers, damageNumber)
+			}
+		}
+
+		u.game.damageNumbers = newDamageNumbers
+	}
+
 }

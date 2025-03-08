@@ -3,6 +3,7 @@ package game
 import (
 	"go-game-space-shooter/internal/assets"
 	"math"
+	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -83,4 +84,8 @@ func GetCursorVector() *Vector {
 		x: float64(cursorPosX),
 		y: float64(cursorPosY),
 	}
+}
+
+func TrimTrailingZeros(str string) string {
+	return strings.TrimRight(strings.TrimRight(str, "0"), ".")
 }
