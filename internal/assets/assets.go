@@ -30,6 +30,12 @@ var SpriteMap = map[string]SpriteInfo{
 	"laser_red": {
 		filename: "laser_red.png",
 	},
+	"pill_blue": {
+		filename: "pill_blue.png",
+	},
+	"bolt_bronze": {
+		filename: "bolt_bronze.png",
+	},
 }
 
 var cache = map[string]*Sprite{}

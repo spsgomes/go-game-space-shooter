@@ -64,7 +64,7 @@ func NewAudio(filename string, filetype string) (*Audio, error) {
 
 	newAudio := &Audio{
 		context: context,
-		player:  player,
+		Player:  player,
 		volume:  1,
 	}
 
@@ -76,24 +76,24 @@ func (a *Audio) GetVolume() float64 {
 }
 
 func (a *Audio) SetVolume(volume float64) {
-	a.player.SetVolume(volume)
+	a.Player.SetVolume(volume)
 	a.volume = volume
 }
 
 func (a *Audio) Play() {
-	a.player.Rewind()
-	a.player.Play()
+	a.Player.Rewind()
+	a.Player.Play()
 }
 
 func (a *Audio) Continue() {
-	if !a.player.IsPlaying() {
-		a.player.Play()
+	if !a.Player.IsPlaying() {
+		a.Player.Play()
 	}
 }
 
 func (a *Audio) Pause() {
-	if a.player.IsPlaying() {
-		a.player.Pause()
+	if a.Player.IsPlaying() {
+		a.Player.Pause()
 	}
 }
 

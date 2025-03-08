@@ -51,14 +51,16 @@ type Game struct {
 	state  GameState
 
 	// Mechanics
-	score           *Score
-	ui              *Ui
-	enemySpawnTimer *Timer
+	score            *Score
+	ui               *Ui
+	enemySpawnTimer  *Timer
+	pickupSpawnTimer *Timer
 
 	// Entities
 	player      *Player
 	enemies     []*Enemy
 	projectiles []*Projectile
+	pickups     []*Pickup
 
 	// Flags
 	hasSavedOnDeath bool
@@ -153,4 +155,14 @@ type Projectile struct {
 	owner     Character
 	damage    float64
 	disabled  bool
+}
+
+type Pickup struct {
+	position     *Vector
+	collision    *CollisionRect
+	sprite       *assets.Sprite
+	audio        *audio.Audio
+	effectName   string
+	effectAmount float64
+	disabled     bool
 }

@@ -17,7 +17,6 @@ const (
 var max_enemies_per_wave int
 
 func (g *Game) Update() error {
-
 	// UI: Update
 	g.ui.Update()
 
@@ -40,6 +39,13 @@ func (g *Game) Update() error {
 	}
 
 	if g.state == GameStatePlaying {
+		// Pickup: Update
+		if len(g.pickups) > 0 {
+			for _, pickup := range g.pickups {
+				pickup.Update(g)
+			}
+		}
+
 		// Enemy: Update
 		if len(g.enemies) > 0 {
 			for _, enemy := range g.enemies {
@@ -59,9 +65,20 @@ func (g *Game) Update() error {
 		if g.enemySpawnTimer.IsReady() {
 			g.enemySpawnTimer.Reset()
 
-			// Only spawn enemies if the player isn't dead
+			// Only spawn enemies if the game is being actively played
 			if g.state == GameStatePlaying {
 				g.enemies = SpawnEnemies(g.random, g.enemies, max_enemies_per_wave)
+			}
+		}
+
+		// Pickup: Spawn timer
+		g.pickupSpawnTimer.Update()
+		if g.pickupSpawnTimer.IsReady() {
+			g.pickupSpawnTimer.Reset()
+
+			// Only spawn pickups if the game is being actively played
+			if g.state == GameStatePlaying {
+				g.pickups = SpawnPickups(g.random, g.pickups, 1)
 			}
 		}
 	}
@@ -70,6 +87,11 @@ func (g *Game) Update() error {
 	g.oneSecondTimer.Update()
 	if g.oneSecondTimer.IsReady() {
 		g.oneSecondTimer.Reset()
+
+		// Loop music
+		if !g.music.Player.IsPlaying() {
+			g.music.Play()
+		}
 
 		// Check Projectiles
 		if len(g.projectiles) > 0 {
@@ -91,6 +113,17 @@ func (g *Game) Update() error {
 				}
 			}
 			g.enemies = tmp
+		}
+
+		// Check Pickups enabled
+		if len(g.pickups) > 0 {
+			var tmp []*Pickup
+			for _, pickup := range g.pickups {
+				if !pickup.disabled {
+					tmp = append(tmp, pickup)
+				}
+			}
+			g.pickups = tmp
 		}
 	}
 
@@ -118,6 +151,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		if len(g.enemies) > 0 {
 			for _, enemy := range g.enemies {
 				enemy.Draw(screen)
+			}
+		}
+
+		// Pickup: Draw
+		if len(g.pickups) > 0 {
+			for _, pickup := range g.pickups {
+				pickup.Draw(screen)
 			}
 		}
 	}
@@ -159,6 +199,12 @@ func NewGame(configs map[string]string) *Game {
 		HandleError(err)
 	}
 
+	// Config: Pickup Spawn Time
+	pickup_spawn_time, err := strconv.ParseInt(Configs["PICKUP_SPAWN_TIME"], 10, 0)
+	if err != nil {
+		HandleError(err)
+	}
+
 	// Config: Maximum Enemies per Wave
 	tmp, err := strconv.ParseInt(Configs["MAX_ENEMIES_PER_WAVE"], 10, 0)
 	if err != nil {
@@ -175,8 +221,9 @@ func NewGame(configs map[string]string) *Game {
 		state:  GameStateInitial,
 
 		// Mechanics
-		score:           NewScore(),
-		enemySpawnTimer: NewTimer(time.Duration(enemy_spawn_time) * time.Second),
+		score:            NewScore(),
+		enemySpawnTimer:  NewTimer(time.Duration(enemy_spawn_time) * time.Second),
+		pickupSpawnTimer: NewTimer(time.Duration(pickup_spawn_time) * time.Second),
 
 		// Entities
 		player: NewPlayer(),
@@ -219,6 +266,7 @@ func (g *Game) Restart() {
 	// Reset Entities
 	g.player = NewPlayer()
 	g.enemies = nil
+	g.pickups = nil
 	g.projectiles = nil
 
 	// Reset Flags
@@ -226,6 +274,7 @@ func (g *Game) Restart() {
 
 	// Reset Timers
 	g.enemySpawnTimer.Reset()
+	g.pickupSpawnTimer.Reset()
 	g.oneSecondTimer.Reset()
 
 	// Trigger enemy spawner once restart
