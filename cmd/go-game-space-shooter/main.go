@@ -11,7 +11,8 @@ import (
 	"github.com/joho/godotenv"
 )
 
-const window_title = "Space Shooter in Go! - by Simão Gomes at simaogomes.com"
+const VERSION = "v1.2.0"
+const WINDOW_TITLE = "Space Shooter in Go! - by Simão Gomes at simaogomes.com"
 
 func main() {
 	var Configs map[string]string
@@ -36,7 +37,7 @@ func main() {
 
 	ebiten.SetRunnableOnUnfocused(false)
 	ebiten.SetWindowSize(window_width, window_height)
-	ebiten.SetWindowTitle(window_title)
+	ebiten.SetWindowTitle(WINDOW_TITLE + " | " + VERSION)
 	ebiten.SetWindowIcon(window_icon)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 
