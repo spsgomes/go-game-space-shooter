@@ -74,6 +74,9 @@ type Game struct {
 	// Flags
 	hasSavedOnDeath bool
 
+	// Counters
+	currentWave int
+
 	// Misc.
 	oneSecondTimer *Timer
 }
@@ -148,6 +151,7 @@ type Player struct {
 type Enemy struct {
 	character           *Character
 	attack              *Attack
+	enemyType           string
 	worthPoints         int64
 	minLengthFromPlayer float64
 	isRunningAway       bool

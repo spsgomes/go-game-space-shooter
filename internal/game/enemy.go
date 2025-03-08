@@ -13,7 +13,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
-func NewEnemy(spriteName string, x float64, y float64, angle float64) *Enemy {
+func NewEnemy(enemyType string, spriteName string, x float64, y float64, angle float64) *Enemy {
 	sprite, err := assets.NewSprite(spriteName)
 	if err != nil {
 		HandleError(err)
@@ -52,6 +52,7 @@ func NewEnemy(spriteName string, x float64, y float64, angle float64) *Enemy {
 			criticalModifier: 0.0,
 			hitAudio:         hitAudio,
 		},
+		enemyType:           enemyType,
 		worthPoints:         10,
 		minLengthFromPlayer: 200.0,
 		isRunningAway:       false,
@@ -61,6 +62,22 @@ func NewEnemy(spriteName string, x float64, y float64, angle float64) *Enemy {
 
 	// Apply configs
 	enemy.applyConfigs()
+
+	// Enemy type
+	switch enemy.enemyType {
+	case "tank":
+		enemy.character.position.scale = 1.0
+		enemy.character.hp.max *= 3.0
+		enemy.character.hp.current = enemy.character.hp.max
+	case "boss":
+		enemy.character.position.scale = 1.0
+		enemy.character.hp.max *= 20.0
+		enemy.character.hp.current = enemy.character.hp.max
+		enemy.attack.fireRate *= 6.0
+		enemy.attack.damage *= 3.0
+	default:
+		// Pass
+	}
 
 	// Create attack timer
 	enemy.attack.timer = NewTimer(time.Millisecond * time.Duration(1.0/enemy.attack.fireRate*1000))
@@ -101,21 +118,29 @@ func (e *Enemy) Draw(screen *ebiten.Image) {
 	}
 }
 
-func SpawnEnemies(random *rand.Rand, enemies []*Enemy, max int) []*Enemy {
+func SpawnEnemies(random *rand.Rand, enemies []*Enemy, currentWave int, max int) []*Enemy {
 
-	const OFFSET_Y float64 = 200.0
+	const OFFSET_Y int = 200
 
-	qty := random.Intn(max) + 1
-	wsX, wsY := GetWindowSize()
+	// Enemy Spawner: Boss!
+	if currentWave > 0 && currentWave%10 == 0 {
+		eX, eY := GetRandomSpawnPosition(random, OFFSET_Y)
+		enemies = append(enemies, NewEnemy("boss", "boss", eX, eY, 0))
 
-	for i := 0; i < qty; i++ {
+		// Don't spawn other enemies in boss encounter
+		return enemies
+	}
 
-		eX := random.Intn(int(wsX))
+	// Enemy Spawner: Basic
+	for range random.Intn(max) + 1 {
+		eX, eY := GetRandomSpawnPosition(random, OFFSET_Y)
+		enemies = append(enemies, NewEnemy("basic", "enemy", eX, eY, 0))
+	}
 
-		eYDir := random.Intn(2) // Generate an integer number between 0 and 1
-		eY := -OFFSET_Y + ((wsY + OFFSET_Y*2.0) * float64(eYDir))
-
-		enemies = append(enemies, NewEnemy("enemy", float64(eX), float64(eY), 0))
+	// Enemy Spawner: Tank (50% chance after wave 5)
+	if currentWave >= 5 && random.Float64()*100.0 <= 50 {
+		eX, eY := GetRandomSpawnPosition(random, OFFSET_Y)
+		enemies = append(enemies, NewEnemy("tank", "enemy", eX, eY, 0))
 	}
 
 	return enemies

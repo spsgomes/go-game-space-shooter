@@ -3,6 +3,7 @@ package game
 import (
 	"go-game-space-shooter/internal/assets"
 	"math"
+	"math/rand"
 	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -88,4 +89,18 @@ func GetCursorVector() *Vector {
 
 func TrimTrailingZeros(str string) string {
 	return strings.TrimRight(strings.TrimRight(str, "0"), ".")
+}
+
+func GetRandomSpawnPosition(random *rand.Rand, offset int) (float64, float64) {
+	wsX, wsY := GetWindowSize()
+
+	posYDir := random.Intn(2) // Generate an integer number between 0 and 1
+	posX := float64(random.Intn(int(wsX)))
+	posY := float64(random.Intn(offset) - offset)
+
+	if posYDir > 0 {
+		posY += wsY + float64(offset*2)
+	}
+
+	return posX, posY
 }

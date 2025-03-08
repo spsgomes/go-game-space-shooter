@@ -24,8 +24,8 @@ This is not meant to be a *production-ready* project, instead it aims to enable 
   - [X] Critical Modifier
 - [X] Add statistics to UI (Current Damage; Current Critical Chance & Modifier; etc.)
 - [X] Add Damage Numbers
-- [ ] Add stronger enemies based on wave progression
-- [ ] Add boss enemy based on wave progression
+- [X] Add stronger enemies based on wave progression
+- [X] Add boss enemy based on wave progression
 - [ ] Add "Play" button to main menu
 - [ ] Add "Quit" button to main menu
 - [ ] Add "Settings" menu, with button in main menu

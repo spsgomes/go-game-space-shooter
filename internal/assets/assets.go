@@ -24,6 +24,9 @@ var SpriteMap = map[string]SpriteInfo{
 	"enemy": {
 		filename: "enemy.png",
 	},
+	"boss": {
+		filename: "boss.png",
+	},
 	"laser_blue": {
 		filename: "laser_blue.png",
 	},

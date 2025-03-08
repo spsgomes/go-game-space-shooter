@@ -60,9 +60,23 @@ func (g *Game) Update() error {
 		if g.enemySpawnTimer.IsReady() {
 			g.enemySpawnTimer.Reset()
 
-			// Only spawn enemies if the game is being actively played
-			if g.state == GameStatePlaying {
-				g.enemies = SpawnEnemies(g.random, g.enemies, max_enemies_per_wave)
+			// If there's a boss on screen, don't spawn new enemies and don't increment current wave
+			bossPresent := false
+			if len(g.enemies) > 0 {
+				for _, enemy := range g.enemies {
+					if enemy.enemyType == "boss" {
+						bossPresent = true
+						break
+					}
+				}
+			}
+
+			if !bossPresent {
+				// Only spawn enemies if the game is being actively played
+				if g.state == GameStatePlaying {
+					g.currentWave++
+					g.enemies = SpawnEnemies(g.random, g.enemies, g.currentWave, max_enemies_per_wave)
+				}
 			}
 		}
 
@@ -226,6 +240,9 @@ func NewGame(configs map[string]string) *Game {
 		// Flags
 		hasSavedOnDeath: false,
 
+		// Counters
+		currentWave: 0,
+
 		// Misc.
 		oneSecondTimer: NewTimer(1000 * time.Millisecond),
 	}
@@ -263,9 +280,13 @@ func (g *Game) Restart() {
 	g.enemies = nil
 	g.pickups = nil
 	g.projectiles = nil
+	g.damageNumbers = nil
 
 	// Reset Flags
 	g.hasSavedOnDeath = false
+
+	// Reset Counters
+	g.currentWave = 0
 
 	// Reset Timers
 	g.enemySpawnTimer.Reset()

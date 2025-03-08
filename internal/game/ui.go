@@ -93,12 +93,14 @@ func (u *Ui) Draw(screen *ebiten.Image) {
 		u.drawEnemiesHpBar(screen)
 		u.drawPlayerHpBar(screen)
 		u.drawDamageNumbers(screen)
+		u.drawCurrentWave(screen)
 		u.drawPlayerStats(screen)
 
 	case GameStatePlaying:
 		u.drawEnemiesHpBar(screen)
 		u.drawPlayerHpBar(screen)
 		u.drawDamageNumbers(screen)
+		u.drawCurrentWave(screen)
 		u.drawPlayerStats(screen)
 	}
 
@@ -304,6 +306,25 @@ func (u *Ui) drawPlayerHpBar(screen *ebiten.Image) {
 	op.GeoM.Reset()
 }
 
+func (u *Ui) drawCurrentWave(screen *ebiten.Image) {
+	_, wsY := GetWindowSize()
+
+	op := &text.DrawOptions{}
+	op.LineSpacing = 20
+	u.font.Size = 16
+	op.ColorScale.Reset()
+
+	op.ColorScale.Scale(255/255.0, 255/255.0, 255/255.0, 255/255.0)
+
+	op.PrimaryAlign = text.AlignStart
+
+	str := "Wave " + strconv.Itoa(u.game.currentWave)
+
+	op.GeoM.Translate(WINDOW_PADDING, wsY-WINDOW_PADDING)
+	text.Draw(screen, str, u.font, op)
+	op.GeoM.Reset()
+}
+
 func (u *Ui) drawPlayerStats(screen *ebiten.Image) {
 	wsX, wsY := GetWindowSize()
 
@@ -442,7 +463,10 @@ func (u *Ui) drawDamageNumbers(screen *ebiten.Image) {
 
 			// Live for only 100 ticks
 			if damageNumber.ticksPassed <= MAX_TICKS {
-				damageNumber.ticksPassed += 1
+
+				if u.game.state == GameStatePlaying {
+					damageNumber.ticksPassed += 1
+				}
 
 				newDamageNumbers = append(newDamageNumbers, damageNumber)
 			}
