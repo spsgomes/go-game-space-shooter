@@ -51,12 +51,14 @@ func NewPlayer() *Player {
 			},
 		},
 		attack: &Attack{
-			spriteName: "laser_blue",
-			fireRate:   6.0,
-			velocity:   10.0,
-			damage:     5.0,
-			audio:      attackAudio,
-			hitAudio:   hitAudio,
+			spriteName:       "laser_blue",
+			fireRate:         6.0,
+			velocity:         10.0,
+			damage:           5.0,
+			criticalChance:   5.0,
+			criticalModifier: 2.0,
+			audio:            attackAudio,
+			hitAudio:         hitAudio,
 		},
 	}
 
@@ -273,8 +275,18 @@ func (p *Player) updateAttack(g *Game) {
 			projectileX := p.character.position.vector.x
 			projectileY := p.character.position.vector.y - ((float64(p.character.sprite.Image.Bounds().Dy())) / 2.0)
 
+			// Attack values
+			attackDamage := p.attack.damage
+			attackCritical := false
+
+			// Calculate critical
+			if g.random.Float64()*100.0 <= p.attack.criticalChance {
+				attackCritical = true
+				attackDamage *= p.attack.criticalModifier
+			}
+
 			// Create a new projectile
-			projectile := NewProjectile("player", p.character, p.attack.spriteName, projectileX, projectileY, p.character.position.angle, p.attack.velocity, p.attack.damage, p.attack.hitAudio)
+			projectile := NewProjectile("player", p.character, p.attack.spriteName, projectileX, projectileY, p.character.position.angle, p.attack.velocity, attackDamage, attackCritical, p.attack.hitAudio)
 			projectile.SetProjectileDirection(GetCursorVector())
 
 			// Add to projectile list

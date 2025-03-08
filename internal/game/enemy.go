@@ -44,11 +44,13 @@ func NewEnemy(spriteName string, x float64, y float64, angle float64) *Enemy {
 			},
 		},
 		attack: &Attack{
-			spriteName: "laser_red",
-			fireRate:   0.5,
-			velocity:   5.0,
-			damage:     10.0,
-			hitAudio:   hitAudio,
+			spriteName:       "laser_red",
+			fireRate:         0.5,
+			velocity:         5.0,
+			damage:           10.0,
+			criticalChance:   0.0,
+			criticalModifier: 0.0,
+			hitAudio:         hitAudio,
 		},
 		worthPoints:         10,
 		minLengthFromPlayer: 200.0,
@@ -295,7 +297,7 @@ func (e *Enemy) updateAttack(g *Game) {
 		projectileY := e.character.position.vector.y - ((float64(e.character.sprite.Image.Bounds().Dy())) / 2.0)
 
 		// Create a new projectile
-		projectile := NewProjectile("enemy", e.character, e.attack.spriteName, projectileX, projectileY, e.character.position.angle, e.attack.velocity, e.attack.damage, e.attack.hitAudio)
+		projectile := NewProjectile("enemy", e.character, e.attack.spriteName, projectileX, projectileY, e.character.position.angle, e.attack.velocity, e.attack.damage, false, e.attack.hitAudio)
 		projectile.SetProjectileDirection(g.player.character.position.vector)
 
 		// Add to projectile list

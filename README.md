@@ -20,9 +20,10 @@ This is not meant to be a *production-ready* project, instead it aims to enable 
 - [X] Add Power-ups
   - [X] Health Pickup
   - [X] Damage Boosters
-  - [ ] Critical Chance
-  - [ ] Critical Modifier
+  - [X] Critical Chance
+  - [X] Critical Modifier
 - [ ] Add statistics to UI (Current Damage; Current Critical Chance & Modifier; etc.)
+- [ ] Add Damage Numbers
 - [ ] Add stronger enemies based on wave progression
 - [ ] Add boss enemy based on wave progression
 - [ ] Add "Play" button to main menu

@@ -41,15 +41,6 @@ func SpawnPickups(random *rand.Rand, pickups []*Pickup, max int) []*Pickup {
 
 	var spawn_types = make([]map[string]any, 0)
 
-	// tmp := map[string]any{
-	// 	"typeName":    "health",
-	// 	"amount":      20,
-	// 	"sprite":      "pill_blue",
-	// 	"audio":       "pickup.wav",
-	// 	"audioType":   "wav",
-	// 	"audioVolume": 0.5,
-	// }
-
 	// Spawn type: health
 	spawn_types = append(spawn_types, map[string]any{
 		"typeName":    "health",
@@ -70,12 +61,32 @@ func SpawnPickups(random *rand.Rand, pickups []*Pickup, max int) []*Pickup {
 		"audioVolume": 0.5,
 	})
 
+	// Spawn type: critical_modifier
+	spawn_types = append(spawn_types, map[string]any{
+		"typeName":    "critical_modifier",
+		"amount":      0.5,
+		"sprite":      "blue_box_bolt",
+		"audio":       "pickup.wav",
+		"audioType":   "wav",
+		"audioVolume": 0.5,
+	})
+
+	// Spawn type: critical_chance
+	spawn_types = append(spawn_types, map[string]any{
+		"typeName":    "critical_chance",
+		"amount":      5.0,
+		"sprite":      "blue_box_star",
+		"audio":       "pickup.wav",
+		"audioType":   "wav",
+		"audioVolume": 0.5,
+	})
+
 	const OFFSET float64 = 200.0
 
 	qty := random.Intn(max) + 1
 	wsX, wsY := GetWindowSize()
 
-	for i := 0; i < qty; i++ {
+	for range qty {
 
 		// Get random type to spawn
 		spawn_type := spawn_types[random.Intn(len(spawn_types))]
@@ -158,6 +169,14 @@ func (p *Pickup) checkCollisions(g *Game) {
 		case "damage":
 			// Add to player's HP
 			g.player.attack.damage *= p.effectAmount
+
+		case "critical_chance":
+			// Add to player's attack critical chance
+			g.player.attack.criticalChance += p.effectAmount
+
+		case "critical_modifier":
+			// Add to player's attack critical modifier
+			g.player.attack.criticalModifier += p.effectAmount
 		}
 
 		// Disable the pickup

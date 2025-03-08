@@ -78,7 +78,7 @@ func (g *Game) Update() error {
 
 			// Only spawn pickups if the game is being actively played
 			if g.state == GameStatePlaying {
-				g.pickups = SpawnPickups(g.random, g.pickups, 1)
+				g.pickups = SpawnPickups(g.random, g.pickups, 2)
 			}
 		}
 	}

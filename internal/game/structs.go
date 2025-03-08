@@ -119,13 +119,15 @@ type Character struct {
 }
 
 type Attack struct {
-	spriteName string
-	fireRate   float64
-	velocity   float64
-	damage     float64
-	timer      *Timer
-	audio      *audio.Audio
-	hitAudio   *audio.Audio
+	spriteName       string
+	fireRate         float64
+	velocity         float64
+	damage           float64
+	criticalChance   float64
+	criticalModifier float64
+	timer            *Timer
+	audio            *audio.Audio
+	hitAudio         *audio.Audio
 }
 
 type Player struct {
@@ -154,6 +156,7 @@ type Projectile struct {
 	ownerTag  string
 	owner     Character
 	damage    float64
+	critical  bool
 	disabled  bool
 }
 

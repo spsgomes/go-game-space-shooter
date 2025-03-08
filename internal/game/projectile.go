@@ -11,7 +11,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
-func NewProjectile(ownerTag string, owner *Character, spriteName string, x float64, y float64, initialAngle float64, velocity float64, damage float64, hitAudio *audio.Audio) *Projectile {
+func NewProjectile(ownerTag string, owner *Character, spriteName string, x float64, y float64, initialAngle float64, velocity float64, damage float64, critical bool, hitAudio *audio.Audio) *Projectile {
 	sprite, err := assets.NewSprite(spriteName)
 	if err != nil {
 		HandleError(err)
@@ -37,6 +37,7 @@ func NewProjectile(ownerTag string, owner *Character, spriteName string, x float
 		ownerTag: ownerTag,
 		owner:    *owner,
 		damage:   damage,
+		critical: critical,
 		disabled: false,
 	}
 
