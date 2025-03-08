@@ -63,20 +63,31 @@ func DistanceBetweenTwoPoints(p1 *Vector, p2 *Vector) (dx float64, dy float64, l
 	return dx, dy, length
 }
 
-func GetObjectRectCoords(vector *Vector, sprite *assets.Sprite, scale float64) (x0, y0, x1, y1 int) {
+func GetObjectRectCoords(x float64, y float64, w float64, h float64, scale float64, subtractHalfW bool, subtractHalfH bool) (x0, y0, x1, y1 int) {
 
 	if scale == 0.0 {
 		scale = 1.0
 	}
 
-	// Get source rectangle to check collisions with
-	x0 = int(vector.x - (float64(sprite.Image.Bounds().Dx())*scale)/2.0)
-	y0 = int(vector.y - (float64(sprite.Image.Bounds().Dy())*scale)/2.0)
+	x0 = int(x)
+	y0 = int(y)
+	x1 = int(w * scale)
+	y1 = int(h * scale)
 
-	x1 = int(float64(sprite.Image.Bounds().Dx()) * scale)
-	y1 = int(float64(sprite.Image.Bounds().Dy()) * scale)
+	// Subtract half width
+	if subtractHalfW {
+		x0 -= int((w * scale) / 2.0)
+	}
+	// Subtract half height
+	if subtractHalfH {
+		y0 -= int((h * scale) / 2.0)
+	}
 
 	return x0, y0, x0 + x1, y0 + y1
+}
+
+func GetSpriteRectCoords(vector *Vector, sprite *assets.Sprite, scale float64) (x0, y0, x1, y1 int) {
+	return GetObjectRectCoords(vector.x, vector.y, float64(sprite.Image.Bounds().Dx()), float64(sprite.Image.Bounds().Dy()), scale, true, true)
 }
 
 func GetCursorVector() *Vector {

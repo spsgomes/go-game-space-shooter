@@ -255,7 +255,7 @@ func (p *Player) updateMovement() {
 	)
 
 	// Update collision rectangle
-	x0, y0, x1, y1 := GetObjectRectCoords(p.character.position.vector, p.character.sprite, p.character.position.scale)
+	x0, y0, x1, y1 := GetSpriteRectCoords(p.character.position.vector, p.character.sprite, p.character.position.scale)
 	p.character.position.collision = &CollisionRect{x0: x0 - 5, y0: y0 - 25, x1: x1 + 2, y1: y1 + 5}
 
 	// ? DEBUG

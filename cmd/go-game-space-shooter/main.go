@@ -34,11 +34,11 @@ func main() {
 
 	window_icon, _ := assets.GetWindowIconImages()
 
+	ebiten.SetRunnableOnUnfocused(false)
 	ebiten.SetWindowSize(window_width, window_height)
 	ebiten.SetWindowTitle(window_title)
 	ebiten.SetWindowIcon(window_icon)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
-	ebiten.SetCursorShape(ebiten.CursorShapeCrosshair)
 
 	// Config: Fullscreen Enabled
 	if Configs["FULLSCREEN_ENABLED"] == "1" {

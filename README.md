@@ -26,8 +26,9 @@ This is not meant to be a *production-ready* project, instead it aims to enable 
 - [X] Add Damage Numbers
 - [X] Add stronger enemies based on wave progression
 - [X] Add boss enemy based on wave progression
-- [ ] Add "Play" button to main menu
-- [ ] Add "Quit" button to main menu
+- [X] Add "Play" button to all menus
+- [X] Add "Restart" button to death screen
+- [X] Add "Quit" button to all menus
 - [ ] Add "Settings" menu, with button in main menu
 
 # Installation

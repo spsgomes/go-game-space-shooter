@@ -294,7 +294,7 @@ func (e *Enemy) updateMovement(p *Player) {
 	e.character.position.angle = ((math.Atan2(dy, dx) * 180) / math.Pi) - 90
 
 	// Update collision rectangle
-	x0, y0, x1, y1 := GetObjectRectCoords(e.character.position.vector, e.character.sprite, e.character.position.scale)
+	x0, y0, x1, y1 := GetSpriteRectCoords(e.character.position.vector, e.character.sprite, e.character.position.scale)
 	e.character.position.collision = &CollisionRect{x0: x0 - 10, y0: y0 - 10, x1: x1 + 15, y1: y1 + 10}
 
 	// ? DEBUG

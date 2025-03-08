@@ -31,8 +31,8 @@ func NewPickup(effectName string, effectAmount float64, spriteName string, x flo
 	}
 
 	// Update collision rectangle
-	x0, y0, x1, y1 := GetObjectRectCoords(pickup.position, pickup.sprite, pickup.position.scale)
-	pickup.collision = &CollisionRect{x0: x0 - 20, y0: y0 + 20, x1: x1 + 20, y1: y1 + 20}
+	x0, y0, x1, y1 := GetSpriteRectCoords(pickup.position, pickup.sprite, pickup.position.scale)
+	pickup.collision = &CollisionRect{x0: x0, y0: y0, x1: x1, y1: y1}
 
 	return &pickup
 }

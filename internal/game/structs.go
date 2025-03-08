@@ -5,6 +5,7 @@ import (
 	"go-game-space-shooter/internal/audio"
 	"math/rand"
 
+	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
@@ -21,11 +22,30 @@ type Background struct {
 	oDy      float64
 }
 
+type ButtonState int
+
+const (
+	ButtonStateDefault ButtonState = iota
+	ButtonStateHover   ButtonState = iota
+)
+
+type Button struct {
+	text      string
+	tag       string
+	position  *Vector
+	collision *CollisionRect
+	state     ButtonState
+}
+
 type Ui struct {
-	game       *Game
-	background *Background
-	font       *text.GoTextFace
-	fontBytes  []byte
+	game              *Game
+	background        *Background
+	mainMenuButtons   []Button
+	pausedMenuButtons []Button
+	deathMenuButtons  []Button
+	forceCursorShape  ebiten.CursorShapeType
+	font              *text.GoTextFace
+	fontBytes         []byte
 }
 
 type Save struct {
@@ -37,10 +57,10 @@ type Save struct {
 type GameState int
 
 const (
-	GameStateInitial = iota
-	GameStatePlaying
-	GameStatePaused
-	GameStateDeath
+	GameStateInitial GameState = iota
+	GameStatePlaying GameState = iota
+	GameStatePaused  GameState = iota
+	GameStateDeath   GameState = iota
 )
 
 type DamageNumber struct {

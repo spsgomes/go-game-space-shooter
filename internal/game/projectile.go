@@ -99,7 +99,7 @@ func (p *Projectile) updateMovement() {
 	p.position.y += p.direction.oDy * p.movement.velocity
 
 	// Update collision rectangle
-	x0, y0, x1, y1 := GetObjectRectCoords(p.position, p.sprite, p.position.scale)
+	x0, y0, x1, y1 := GetSpriteRectCoords(p.position, p.sprite, p.position.scale)
 	p.collision = &CollisionRect{x0: x0 - 20, y0: y0 + 20, x1: x1 + 20, y1: y1 + 20}
 
 }
