@@ -29,18 +29,18 @@ func CheckWithinBounds(x float64, y float64, w float64, h float64, s float64) (f
 
 	wsX, wsY := GetWindowSize()
 
-	if x < w*s/2+window_padding {
-		x = w*s/2 + window_padding
+	if x < w*s/2+WINDOW_PADDING {
+		x = w*s/2 + WINDOW_PADDING
 
-	} else if x > float64(wsX)-(w*s/2)-window_padding {
-		x = float64(wsX) - (w * s / 2) - window_padding
+	} else if x > float64(wsX)-(w*s/2)-WINDOW_PADDING {
+		x = float64(wsX) - (w * s / 2) - WINDOW_PADDING
 	}
 
-	if y < h*s/2+window_padding {
-		y = h*s/2 + window_padding
+	if y < h*s/2+WINDOW_PADDING {
+		y = h*s/2 + WINDOW_PADDING
 
-	} else if y > float64(wsY)-(h*s/2)-window_padding {
-		y = float64(wsY) - (h * s / 2) - window_padding
+	} else if y > float64(wsY)-(h*s/2)-WINDOW_PADDING {
+		y = float64(wsY) - (h * s / 2) - WINDOW_PADDING
 	}
 
 	return x, y

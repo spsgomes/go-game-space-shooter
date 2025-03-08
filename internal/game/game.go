@@ -9,11 +9,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-const (
-	window_padding  = 40
-	background_size = 256
-)
-
 var max_enemies_per_wave int
 
 func (g *Game) Update() error {

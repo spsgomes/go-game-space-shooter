@@ -16,6 +16,11 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
+const (
+	WINDOW_PADDING  = 40
+	BACKGROUND_SIZE = 256
+)
+
 func NewUi(game *Game) *Ui {
 
 	fontTrainOneRegularTTF, err := assets.LoadFont("", "TrainOne-Regular.ttf")
@@ -112,9 +117,9 @@ func (u *Ui) DrawBackground(screen *ebiten.Image) {
 
 	op := &ebiten.DrawImageOptions{}
 
-	for x := -1; x < int(math.Ceil(wsX/background_size)); x++ {
-		for y := -1; y < int(math.Ceil(wsY/background_size)); y++ {
-			op.GeoM.Translate(float64(x*background_size)+u.background.ticker*u.background.oDx*u.background.velocity, float64(y*background_size)+u.background.ticker*u.background.oDy*u.background.velocity)
+	for x := -1; x < int(math.Ceil(wsX/BACKGROUND_SIZE)); x++ {
+		for y := -1; y < int(math.Ceil(wsY/BACKGROUND_SIZE)); y++ {
+			op.GeoM.Translate(float64(x*BACKGROUND_SIZE)+u.background.ticker*u.background.oDx*u.background.velocity, float64(y*BACKGROUND_SIZE)+u.background.ticker*u.background.oDy*u.background.velocity)
 			screen.DrawImage(sprite.Image, op)
 			op.GeoM.Reset()
 		}
@@ -123,7 +128,7 @@ func (u *Ui) DrawBackground(screen *ebiten.Image) {
 	if slices.Contains([]GameState{GameStateInitial, GameStatePlaying, GameStateDeath}, u.game.state) {
 		u.background.ticker++
 
-		if u.background.ticker*u.background.oDx*u.background.velocity > background_size {
+		if u.background.ticker*u.background.oDx*u.background.velocity > BACKGROUND_SIZE {
 			u.background.ticker = 0
 		}
 	}
@@ -177,7 +182,7 @@ Escape: Pause/Unpause`
 
 	_, textH = text.Measure(str, u.font, op.LineSpacing)
 
-	op.GeoM.Translate(window_padding, wsY-window_padding-textH)
+	op.GeoM.Translate(WINDOW_PADDING, wsY-WINDOW_PADDING-textH)
 	text.Draw(screen, str, u.font, op)
 	op.GeoM.Reset()
 }
@@ -294,7 +299,7 @@ func (u *Ui) drawPlayerHpBar(screen *ebiten.Image) {
 
 	_, textH := text.Measure(str, u.font, op.LineSpacing)
 
-	op.GeoM.Translate(window_padding, wsY-window_padding-textH)
+	op.GeoM.Translate(WINDOW_PADDING, wsY-WINDOW_PADDING-textH)
 	text.Draw(screen, str, u.font, op)
 	op.GeoM.Reset()
 }
@@ -324,7 +329,7 @@ func (u *Ui) drawPlayerStats(screen *ebiten.Image) {
 		textW = 70
 	}
 
-	op.GeoM.Translate(wsX-window_padding-textW, wsY-window_padding-textH)
+	op.GeoM.Translate(wsX-WINDOW_PADDING-textW, wsY-WINDOW_PADDING-textH)
 	text.Draw(screen, str, u.font, op)
 	op.GeoM.Reset()
 
@@ -337,7 +342,7 @@ func (u *Ui) drawPlayerStats(screen *ebiten.Image) {
 	}
 	str = strings.Join(strs, "\n")
 
-	op.GeoM.Translate(wsX-window_padding-textW, wsY-window_padding-textH)
+	op.GeoM.Translate(wsX-WINDOW_PADDING-textW, wsY-WINDOW_PADDING-textH)
 	text.Draw(screen, str, u.font, op)
 	op.GeoM.Reset()
 }
